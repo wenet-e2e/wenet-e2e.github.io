@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+  <script>
+    const params = new Proxy(new URLSearchParams(window.location.search), {
+      get: (searchParams, prop) => searchParams.get(prop),
+    });
+    if (params.dataset) {
+      fetch(`https://modelscope.cn/api/v1/datasets/wenet/${params.dataset}/oss/tree`)
+        .then(response => response.json())
+        .then(data => {
+          var model = data['Data'].find(model => model['Key'] === params.name);
+          window.location.replace(model['Url']);
+        });
+    } else if (params.models) {
+      const models = params.models + '_pretrained_models'
+      fetch(`https://modelscope.cn/api/v1/datasets/wenet/${models}/oss/tree`)
+        .then(response => response.json())
+        .then(data => {
+          var model = data['Data'].find(model => model['Key'] === params.version);
+          window.location.replace(model['Url']);
+        });
+    }
+  </script>
+</body>
+
+</html>
